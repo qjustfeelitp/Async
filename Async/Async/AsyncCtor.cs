@@ -31,17 +31,3 @@ public class AsyncCtorIfNeeded
         this.SomeData = "test";
     }
 }
-
-public static class AsyncCtorIfNeededExecutor
-{
-    public static async Task<AsyncCtorIfNeeded> Create()
-    {
-        var tcs = new TaskCompletionSource();
-
-        var asyncCtorIfNeeded = new AsyncCtorIfNeeded(() => tcs.TrySetResult());
-
-        await tcs.Task;
-
-        return asyncCtorIfNeeded;
-    }
-}

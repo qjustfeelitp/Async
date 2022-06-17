@@ -64,7 +64,7 @@ public static class TeaMaker
 
         Console.WriteLine("waiting for the kettle");
 
-        Task.Delay(2000).GetAwaiter().GetResult();
+        Thread.Sleep(300);
 
         Console.WriteLine("kettle finished boiling");
 

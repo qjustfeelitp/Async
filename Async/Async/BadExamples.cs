@@ -1,6 +1,6 @@
 ﻿namespace Async;
 
-public static class Examples
+public static class BadExamples
 {
     /// <summary>
     /// Once you go async, all of your callers SHOULD be async, since efforts to be async amount to nothing unless the entire callstack is async.
@@ -12,6 +12,8 @@ public static class Examples
         int a = default;
 
         int result = Task.Run(() => a + 1).Result;
+
+        //int result = Task.Run(() => a + 1).GetAwaiter().GetResult();
 
         Console.WriteLine(result);
     }
@@ -26,9 +28,9 @@ public static class Examples
 
         await Task.Run(() => obj.SomeData += 1);
 
-        NoNo(obj);
+        Do(obj);
 
-        async void NoNo(SomeObject input)
+        async void Do(SomeObject input)
         {
             await Task.Delay(10);
             input.SomeData = 1_000;
@@ -42,12 +44,12 @@ public static class Examples
     /// </summary>
     public static async void Example03()
     {
-        await Task.Run(() => throw new Exception());
+        await Task.Run(() => throw new Exception("KABOOM"));
     }
 
     public static Task<int> Example04()
     {
-        return Task.Run(() => 1);
+        return Task.Run(() => 150);
     }
 
     /// <summary>

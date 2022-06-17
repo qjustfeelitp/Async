@@ -3,6 +3,7 @@
 public static class WithAndWithoutAsyncKeyword
 {
     private static readonly Task<string> MockTask = Task.FromResult("hello");
+    private static readonly Task<string> ExceptionTask = Task.FromException<string>(new Exception("KABOOM!"));
 
     public static Task<string> Without()
     {
@@ -14,17 +15,13 @@ public static class WithAndWithoutAsyncKeyword
         return await MockTask;
     }
 
-    public static Task<string> HttpCallWithout()
+    public static Task<string> HttpCallWithout(HttpClient client)
     {
-        using var client = new HttpClient();
-
-        return client.GetStringAsync("https://mph.stormware.cz/api/invoice/");
+        return client.GetStringAsync("https://api.github.com/users/qjustfeelitp");
     }
 
-    public static async Task<string> HttpCallWith()
+    public static async Task<string> HttpCallWith(HttpClient client)
     {
-        using var client = new HttpClient();
-
-        return await client.GetStringAsync("https://mph.stormware.cz/api/invoice/");
+        return await client.GetStringAsync("https://api.github.com/users/qjustfeelitp");
     }
 }

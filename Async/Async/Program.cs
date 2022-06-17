@@ -17,24 +17,35 @@
 // task is something like a bridge between async keyword (user code) and compiled state machine and await generates some sort of checkpoints in the state machine
 
 // WHAT IS VALUETASK?
-// discriminated union where it can return one of two values Task<T> or T
+// discriminated union where it can return one of two values Task<T> or T, useful for situation where code can execute synchronously for example from cached value
+
+// ----------------------------------------------------------------------------------
 
 using Async;
 
+//int o = default;
+//var thread = new Thread(() => o = 42);
+//thread.Start();
+//thread.Join();
+//Console.WriteLine(o);
+
+//Console.WriteLine(new string('-', 50));
+
 // ----------------------------------------------------------------------------------
-//Examples.Example01();
-//await Examples.Example02();
+
+BadExamples.Example01();
+//await BadExamples.Example02();
 
 //try
 //{
-//    Examples.Example03();
+//    BadExamples.Example03();
 //}
-//catch
+//catch (Exception exception)
 //{
-//    // will be caught?
+//    Console.WriteLine(exception.Message);
 //}
 
-//Console.WriteLine(await Examples.Example04());
+//Console.WriteLine(await BadExamples.Example04());
 //Console.WriteLine(new string('-', 50));
 
 // ----------------------------------------------------------------------------------
@@ -69,17 +80,21 @@ using Async;
 
 // ----------------------------------------------------------------------------------
 
-//var awaitableClass = new AwaitableClass();
-//await awaitableClass;
-//Console.WriteLine(awaitableClass.IsSomething);
-//Console.WriteLine(new string('-', 50));
-
 //var asyncCtor = new AsyncCtor();
 //Console.WriteLine(asyncCtor.SomeData);
 //Console.WriteLine(new string('-', 50));
 
-//var asyncCtorIfNeeded = await AsyncCtorIfNeededExecutor.Create();
+//var tcs = new TaskCompletionSource();
+
+//var asyncCtorIfNeeded = new AsyncCtorIfNeeded(() => tcs.TrySetResult());
+
+//await tcs.Task;
 //Console.WriteLine(asyncCtorIfNeeded.SomeData);
+//Console.WriteLine(new string('-', 50));
+
+//var awaitableClass = new AwaitableClass();
+//await awaitableClass;
+//Console.WriteLine(awaitableClass.IsSomething);
 //Console.WriteLine(new string('-', 50));
 
 // ----------------------------------------------------------------------------------
@@ -102,7 +117,8 @@ using Async;
 //    valueTasks.Add(valueTaskMagic);
 //}
 
-//await Task.WhenAll(valueTasks);
+////await Task.WhenAll(valueTasks);
+//await Task.WhenAll(valueTasks.Select(x => x.AsTask()));
 
 //foreach (var valueTask in valueTasks)
 //{
@@ -120,27 +136,83 @@ using Async;
 
 //Console.WriteLine(await Cancellation.CancellableTask(cts.Token));
 
-using var cts2 = new CancellationTokenSource();
+//using var cts2 = new CancellationTokenSource();
 
-var cancellableTask = Cancellation.CancellableTask(cts2.Token);
+//var cancellableTask = Cancellation.CancellableTask(cts2.Token);
 
-await Task.Delay(100);
-cts2.Cancel();
+//await Task.Delay(100);
+//cts2.Cancel();
 
-int result = default;
+//int value = default;
 
-try
-{
-    result = await cancellableTask;
-}
-catch (OperationCanceledException)
-{
-    //ignored
-}
+//try
+//{
+//    value = await cancellableTask;
+//}
+//catch (OperationCanceledException)
+//{
+//    //ignored
+//}
 
-Console.WriteLine(result);
+//Console.WriteLine(value);
 
 //using var cts3 = new CancellationTokenSource(TimeSpan.FromSeconds(2));
 
 //Console.WriteLine(Cancellation.CancellableNotTask(cts3.Token));
+//Console.WriteLine(new string('-', 50));
 
+// ----------------------------------------------------------------------------------
+
+//string result = await WithAndWithoutAsyncKeyword.Without();
+//Console.WriteLine(result);
+
+//string result2 = await WithAndWithoutAsyncKeyword.With();
+//Console.WriteLine(result2);
+
+//using var client = new HttpClient();
+
+//string githubUnauthorizedResult = await WithAndWithoutAsyncKeyword.HttpCallWithout(client);
+//Console.WriteLine(githubUnauthorizedResult);
+
+//string githubUnauthorizedResult2 = await WithAndWithoutAsyncKeyword.HttpCallWith(client);
+//Console.WriteLine(githubUnauthorizedResult2);
+//Console.WriteLine(new string('-', 50));
+
+// ----------------------------------------------------------------------------------
+
+//Console.WriteLine(Environment.CurrentManagedThreadId);
+
+//var badTask = Task.Run(async () =>
+//                   {
+//                       Console.WriteLine(Environment.CurrentManagedThreadId);
+//                       await Task.Delay(1_000).ConfigureAwait(false);
+//                       Console.WriteLine(Environment.CurrentManagedThreadId);
+//                   })
+//                  .ConfigureAwait(false);
+
+//badTask.GetAwaiter().GetResult();
+//Console.WriteLine(Environment.CurrentManagedThreadId);
+
+//await Task.Run(async () =>
+//           {
+//               Console.WriteLine(Environment.CurrentManagedThreadId);
+//               await Task.Delay(1_000).ConfigureAwait(false);
+//               Console.WriteLine(Environment.CurrentManagedThreadId);
+//           })
+//          .ConfigureAwait(false);
+
+//Console.WriteLine(Environment.CurrentManagedThreadId);
+//Console.WriteLine(new string('-', 50));
+// ----------------------------------------------------------------------------------
+
+// WHAT TO REMEMBER?
+// do not use async void (except events)
+// do not return Task or ValueTask, await if possible - exception source
+// do not use continuations, use consequent awaits
+// you can start task and await it later, if result is not needed
+// if using manually created cancellation token sources, dispose them, always
+// you can run multiple tasks in parallel with WhenXXX methods on Task class, do not use WaitXXX that blocks executing threads
+// do not use .Result .GetAwaiter().GetResult .Wait() wherever possible, it just blocks executing thread, sync over async problem where two threads are needed to execute that operation and can cause threadpool starvation or deadlocks in platforms with synchronization context available, just replace it with sync version!
+// if in platform with synchronization context and the operation result is not needed to be synchronized to that context, use configure await set to false so that there is no synchronization overhead, is asp net core, no synchronization context is present, so no need to call configure await
+// when using async keyword you are practically creating new state machine with await checkpoints, if there is no need for method to execute asynchronously, use Task.CompletedTask or FromResult or other statically available methods (similar to lambdas capturing outer variables, it creates new classes DisplayClasses to hold those variables)
+// if using Task.Run to fire and forget some job, always try to manage exception handling inside, not outside! exception will not be propagated to caller for obvious reasons
