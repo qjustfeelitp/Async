@@ -20,9 +20,9 @@ public class AsyncCtorIfNeeded
 {
     public string SomeData { get; private set; }
 
-    public AsyncCtorIfNeeded(Action executed)
+    public AsyncCtorIfNeeded(Action executed) //, Action exceptionAction)
     {
-        Construct().ContinueWith(task => executed());
+        Construct().ContinueWith(task => { executed(); }, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.OnlyOnRanToCompletion);
     }
 
     private async Task Construct()

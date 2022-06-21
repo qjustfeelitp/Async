@@ -21,6 +21,9 @@ public static class TeaMaker
         Console.WriteLine("put tea in cups");
 
         Console.WriteLine(Environment.CurrentManagedThreadId);
+
+        Console.WriteLine("zčekoval jsem fb na záchodě");
+
         string water = await boilingWater;
         string tea = $"pour {water} in cups";
         Console.WriteLine(Environment.CurrentManagedThreadId);

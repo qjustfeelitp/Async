@@ -21,54 +21,7 @@
 
 // ----------------------------------------------------------------------------------
 
-using Async;
 
-//int o = default;
-//var thread = new Thread(() => o = 42);
-//thread.Start();
-//thread.Join();
-//Console.WriteLine(o);
-
-//Console.WriteLine(new string('-', 50));
-
-// ----------------------------------------------------------------------------------
-
-BadExamples.Example01();
-//await BadExamples.Example02();
-
-//try
-//{
-//    BadExamples.Example03();
-//}
-//catch (Exception exception)
-//{
-//    Console.WriteLine(exception.Message);
-//}
-
-//Console.WriteLine(await BadExamples.Example04());
-//Console.WriteLine(new string('-', 50));
-
-// ----------------------------------------------------------------------------------
-
-//await 1;
-//await TimeSpan.FromMilliseconds(1);
-//await Process.Start("notepad.exe");
-
-//var tasks = new List<Task<int>>();
-
-//for (int i = 0; i < 10; i++)
-//{
-//    tasks.Add(Task.FromResult(RandomNumberGenerator.GetInt32(100)));
-//}
-
-//await tasks;
-
-//foreach (var task in tasks)
-//{
-//    Console.WriteLine(await task);
-//}
-
-// ----------------------------------------------------------------------------------
 
 //Console.WriteLine(new string('-', 50));
 
@@ -80,21 +33,54 @@ BadExamples.Example01();
 
 // ----------------------------------------------------------------------------------
 
-//var asyncCtor = new AsyncCtor();
-//Console.WriteLine(asyncCtor.SomeData);
+//string result = await WithAndWithoutAsyncKeyword.Without();
+//Console.WriteLine(result);
+
+//string result2 = await WithAndWithoutAsyncKeyword.With();
+//Console.WriteLine(result2);
+
+//using var client = new HttpClient();
+
+//string githubUnauthorizedResult = await WithAndWithoutAsyncKeyword.HttpCallWithout(client);
+//Console.WriteLine(githubUnauthorizedResult);
+
+//string githubUnauthorizedResult2 = await WithAndWithoutAsyncKeyword.HttpCallWith(client);
+//Console.WriteLine(githubUnauthorizedResult2);
 //Console.WriteLine(new string('-', 50));
 
-//var tcs = new TaskCompletionSource();
+// ----------------------------------------------------------------------------------
 
-//var asyncCtorIfNeeded = new AsyncCtorIfNeeded(() => tcs.TrySetResult());
+//Continuation.Run();
+//await Continuation.RunBetter();
 
-//await tcs.Task;
-//Console.WriteLine(asyncCtorIfNeeded.SomeData);
-//Console.WriteLine(new string('-', 50));
+// ----------------------------------------------------------------------------------
 
-//var awaitableClass = new AwaitableClass();
-//await awaitableClass;
-//Console.WriteLine(awaitableClass.IsSomething);
+//using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+
+//Console.WriteLine(await Cancellation.CancellableTask(cts.Token));
+
+//using var cts2 = new CancellationTokenSource();
+
+//var cancellableTask = Cancellation.CancellableTask(cts2.Token);
+
+//int value = default;
+
+//try
+//{
+//    await Task.Delay(100);
+//    cts2.Cancel();
+//    value = await cancellableTask;
+//}
+//catch (OperationCanceledException)
+//{
+//    //ignored
+//}
+
+//Console.WriteLine(value);
+
+//using var cts3 = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+
+//Console.WriteLine(Cancellation.CancellableNotTask(cts3.Token));
 //Console.WriteLine(new string('-', 50));
 
 // ----------------------------------------------------------------------------------
@@ -117,7 +103,7 @@ BadExamples.Example01();
 //    valueTasks.Add(valueTaskMagic);
 //}
 
-////await Task.WhenAll(valueTasks);
+//await Task.WhenAll(valueTasks);
 //await Task.WhenAll(valueTasks.Select(x => x.AsTask()));
 
 //foreach (var valueTask in valueTasks)
@@ -129,53 +115,29 @@ BadExamples.Example01();
 
 // ----------------------------------------------------------------------------------
 
-//Continuation.Run();
-//await Continuation.RunBetter();
-
-//using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-
-//Console.WriteLine(await Cancellation.CancellableTask(cts.Token));
-
-//using var cts2 = new CancellationTokenSource();
-
-//var cancellableTask = Cancellation.CancellableTask(cts2.Token);
-
-//await Task.Delay(100);
-//cts2.Cancel();
-
-//int value = default;
+//BadExamples.Example01();
+//await BadExamples.Example02();
 
 //try
 //{
-//    value = await cancellableTask;
+//    BadExamples.Example03();
 //}
-//catch (OperationCanceledException)
+//catch (Exception exception)
 //{
-//    //ignored
+//    Console.WriteLine(exception.Message);
 //}
 
-//Console.WriteLine(value);
-
-//using var cts3 = new CancellationTokenSource(TimeSpan.FromSeconds(2));
-
-//Console.WriteLine(Cancellation.CancellableNotTask(cts3.Token));
+//Console.WriteLine(await BadExamples.Example04());
 //Console.WriteLine(new string('-', 50));
 
 // ----------------------------------------------------------------------------------
 
-//string result = await WithAndWithoutAsyncKeyword.Without();
-//Console.WriteLine(result);
+//int o = default;
+//var thread = new Thread(() => o = 42);
+//thread.Start();
+//thread.Join();
+//Console.WriteLine(o);
 
-//string result2 = await WithAndWithoutAsyncKeyword.With();
-//Console.WriteLine(result2);
-
-//using var client = new HttpClient();
-
-//string githubUnauthorizedResult = await WithAndWithoutAsyncKeyword.HttpCallWithout(client);
-//Console.WriteLine(githubUnauthorizedResult);
-
-//string githubUnauthorizedResult2 = await WithAndWithoutAsyncKeyword.HttpCallWith(client);
-//Console.WriteLine(githubUnauthorizedResult2);
 //Console.WriteLine(new string('-', 50));
 
 // ----------------------------------------------------------------------------------
@@ -203,6 +165,46 @@ BadExamples.Example01();
 
 //Console.WriteLine(Environment.CurrentManagedThreadId);
 //Console.WriteLine(new string('-', 50));
+
+// ----------------------------------------------------------------------------------
+
+//await 1;
+//await TimeSpan.FromMilliseconds(1);
+//await Process.Start("notepad.exe");
+
+//var tasks = new List<Task<int>>();
+
+//for (int i = 0; i < 10; i++)
+//{
+//    tasks.Add(Task.FromResult(RandomNumberGenerator.GetInt32(100)));
+//}
+
+//await tasks;
+
+//foreach (var task in tasks)
+//{
+//    Console.WriteLine(await task);
+//}
+
+// ----------------------------------------------------------------------------------
+
+//var asyncCtor = new AsyncCtor();
+//Console.WriteLine(asyncCtor.SomeData);
+//Console.WriteLine(new string('-', 50));
+
+//var tcs = new TaskCompletionSource();
+
+//var asyncCtorIfNeeded = new AsyncCtorIfNeeded(() => tcs.TrySetResult());
+
+//await tcs.Task;
+//Console.WriteLine(asyncCtorIfNeeded.SomeData);
+//Console.WriteLine(new string('-', 50));
+
+//var awaitableClass = new AwaitableClass();
+//await awaitableClass;
+//Console.WriteLine(awaitableClass.IsSomething);
+//Console.WriteLine(new string('-', 50));
+
 // ----------------------------------------------------------------------------------
 
 // WHAT TO REMEMBER?

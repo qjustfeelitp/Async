@@ -4,7 +4,7 @@ namespace Async;
 
 public static class ValueTaskMagic
 {
-    private static int? cachedValue;
+    private static int? cachedValue = 10;
 
     public static async ValueTask<int> GetValue()
     {

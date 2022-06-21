@@ -30,13 +30,13 @@ public static class BadExamples
 
         Do(obj);
 
-        async void Do(SomeObject input)
-        {
-            await Task.Delay(10);
-            input.SomeData = 1_000;
-        }
-
         Console.WriteLine(obj.SomeData);
+    }
+
+    private static async void Do(SomeObject input)
+    {
+        await Task.Delay(10);
+        input.SomeData = 1_000;
     }
 
     /// <summary>
